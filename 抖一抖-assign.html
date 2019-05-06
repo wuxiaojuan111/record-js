@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #box {
+            width: 100px;
+            height: 100px;
+            background: skyblue;
+            position: absolute;
+            left: 50px;
+            top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <button id="btn">按钮2</button>
+    <script>
+        //点击box触发事件
+        box.onclick = function () {
+            shk({
+                // cell:1,
+                // cell(){
+                //     console.log('回调了');
+                // },
+                //下面的代码等同于上面这个
+                // cell:function(){
+
+                // },
+                obj: box,
+                // cell: 22
+                cell() {
+                    console.log(22);
+                }
+            });
+        }
+
+
+        //抖动
+        //函数的参数是可以设置默认值的，如果有实参就走实参，没有走默认。
+        function shk(objs) {
+            //默认配置
+            //为什么要用默认配置？
+            //是因为有些参数不想传
+            let oo = {
+                obj: null,
+                attr: 'left',
+                ex: 10,
+                cell: function () { }
+            }
+            Object.assign(oo, objs);//有配置走配置，没配置走默认
+            if (objs.cell && typeof objs.cell !== 'function') {//如果传了一个cell的属性,还要判断是否为函数，因为只有函数才能调用。
+                oo.cell = function () { }
+            }
+
+            let num = 0;
+            let timer = null;
+            let begin = parseFloat(getComputedStyle(oo.obj)[oo.attr]);//获取box.left初始值
+            let arr = [];
+            for (let i = oo.ex; i > 0; i -= 2) {
+                arr.push(i, -i);//arr=[10,-10,8,-8,6,-6,4,-4,2,-2]
+            }
+            arr.push(0);//arr=[10,-10,8,-8,6,-6,4,-4,2,-2,0]
+            // console.log(arr)
+            clearInterval(oo.obj.timer);//在定时器执行下次操作前先清除
+            oo.obj.timer = setInterval(() => {
+                oo.obj.style[oo.attr] = begin + arr[num] + 'px';//初始值+移动距离
+                num++;
+                if (num == arr.length) {//如果num等于arr的长度，就让num为0
+                    num = 0;
+                    clearInterval(oo.obj.timer);
+                    oo.cell && oo.cell();//当运动完后再执行这个函数
+                }
+            }, 16.7);
+        }
+
+    </script>
+</body>
+
+</html>
