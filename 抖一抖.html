@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #box {
+            width: 100px;
+            height: 100px;
+            background: skyblue;
+            position: absolute;
+            left: 50px;
+            top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <button id="btn">按钮2</button>
+    <script>
+        //点击box触发事件
+        box.onclick = function () {
+            shk(box, 'left', 10, function () {//函数调用传参
+                console.log(222);
+            });
+
+        }
+
+        //抖动
+        //函数的参数是可以设置默认值的，如果有实参就走实参，没有走默认。
+        function shk(obj, attr, ex = 10, cell) {
+            let num = 0;
+            let timer = null;
+            let begin = parseFloat(getComputedStyle(obj)[attr]);//获取box.left初始值
+            let arr = [];
+            for (let i = ex; i > 0; i -= 2) {
+                arr.push(i, -i);//arr=[10,-10,8,-8,6,-6,4,-4,2,-2]
+            }
+            arr.push(0);//arr=[10,-10,8,-8,6,-6,4,-4,2,-2,0]
+            // console.log(arr)
+            clearInterval(obj.timer);//在定时器执行下次操作前先清除
+            obj.timer = setInterval(() => {
+                obj.style[attr] = begin + arr[num] + 'px';//初始值+移动距离
+                num++;
+                if (num == arr.length) {//如果num等于arr的长度，就让num为0
+                    num = 0;
+                    clearInterval(obj.timer);
+                    cell && cell();//当运动完后再执行这个函数
+                    // console.log(333);
+                }
+
+            }, 16.7);
+        }
+
+        //点击btn触发事件
+        btn.onclick = function () {
+            shk(box, 'left', 10, function () {
+                console.log(4);
+                box.style.background = 'red';
+            });
+        }
+
+
+    </script>
+</body>
+
+</html>
