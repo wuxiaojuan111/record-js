@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #box {
+            width: 80px;
+            height: 80px;
+            background: darkgoldenrod;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .active {
+            width: 80px;
+            height: 80px;
+            background: darkgoldenrod;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: .5;
+        }
+    </style>
+</head>
+
+<body id="body">
+    <div id="box"></div>
+    <script>
+        /*
+             1.在按下box的时候，创建一个跟它一样一样的元素
+             2.拖动一样一样的那个元素
+             3.抬起的时候把一样一样元素的位置给按下的那个box
+             4.再删除一样一样的那个元素
+         */
+        //当按下box时触发
+        box.onmousedown = function (ev) {
+            // console.log(11)
+            //按下的位置到边界位置=鼠标按下的坐标-box原始的初始位置
+            let le = ev.pageX - box.offsetLeft;
+            let to = ev.pageY - box.offsetTop;
+            //创建一个和box一样的元素
+            let boxClone = document.createElement('div');
+            //给新创建的元素添加类名
+            boxClone.className = 'active';
+            //把box的绝对距离赋给boxClone
+            boxClone.style.left = box.offsetLeft + 'px';
+            boxClone.style.top = box.offsetTop + 'px';
+            //把boxClone元素添加到body后面
+            body.append(boxClone);
+            // console.log(boxClone)
+
+            //当鼠标移动的时候触发
+            document.onmousemove = function (ev) {
+                //boxClone移动的位置
+                boxClone.style.left = ev.pageX - le + 'px';
+                boxClone.style.top = ev.pageY - to + 'px';
+            }
+            //当鼠标抬起的时候清除
+            document.onmouseup = function () {
+                //把boxClone元素的样式赋给box
+                box.style.left = boxClone.style.left;
+                box.style.top = boxClone.style.top;
+                //删除boxClone元素
+                boxClone.remove();
+                //清空移动和抬起
+                document.onmousemove = document.onmouseup = null;
+
+            }
+            return false;//清除默认行为
+
+        }
+
+
+
+    </script>
+</body>
+
+</html>
